@@ -16,7 +16,7 @@ const ApplyLoan = () => {
     monthlyTurnover: '',
     loanType: '',
     loanAmount: '',
-    documentUrl: '', // Changed from documents to documentUrl
+    documentUrl: '',
   });
   const [submittedData, setSubmittedData] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,18 +59,12 @@ const ApplyLoan = () => {
     try {
       const user = auth.currentUser;
       
-      // Check if user is authenticated
       if (!user) {
         toast.error('Please sign in to submit a loan application');
         navigate('/login');
         return;
       }
 
-      // Log user and auth state for debugging
-      console.log('Current user:', user);
-      console.log('User ID:', user.uid);
-
-      // Validate required fields
       const requiredFields = ['name', 'contactNumber', 'panCard', 'aadhar', 'employmentType', 'loanType', 'loanAmount'];
       const missingFields = requiredFields.filter(field => !formData[field]);
       
@@ -80,7 +74,6 @@ const ApplyLoan = () => {
         return;
       }
 
-      // Create loan application data
       const loanData = {
         userId: user.uid,
         userEmail: user.email,
@@ -99,39 +92,29 @@ const ApplyLoan = () => {
         updatedAt: new Date().toISOString()
       };
 
-      // Log the data being submitted
-      console.log('Submitting loan data:', loanData);
+      const loanApplicationsRef = collection(db, 'loanApplications');
+      const docRef = await addDoc(loanApplicationsRef, loanData);
+      console.log('Document written with ID:', docRef.id);
 
-      // Add to Firestore with error handling
-      try {
-        const loanApplicationsRef = collection(db, 'loanApplications');
-        const docRef = await addDoc(loanApplicationsRef, loanData);
-        console.log('Document written with ID:', docRef.id);
+      setSubmittedData({
+        ...loanData,
+        id: docRef.id
+      });
 
-        setSubmittedData({
-          ...loanData,
-          id: docRef.id
-        });
+      toast.success('Loan application submitted successfully!');
 
-        toast.success('Loan application submitted successfully!');
-
-        // Reset form
-        setFormData({
-          name: '',
-          contactNumber: '',
-          panCard: '',
-          aadhar: '',
-          employmentType: '',
-          monthlyIncome: '',
-          monthlyTurnover: '',
-          loanType: '',
-          loanAmount: '',
-          documentUrl: '',
-        });
-      } catch (firestoreError) {
-        console.error('Firestore error:', firestoreError);
-        throw new Error(`Failed to save to Firestore: ${firestoreError.message}`);
-      }
+      setFormData({
+        name: '',
+        contactNumber: '',
+        panCard: '',
+        aadhar: '',
+        employmentType: '',
+        monthlyIncome: '',
+        monthlyTurnover: '',
+        loanType: '',
+        loanAmount: '',
+        documentUrl: '',
+      });
 
     } catch (error) {
       console.error('Error details:', error);
@@ -141,7 +124,6 @@ const ApplyLoan = () => {
     }
   };
 
-  // Update the document input field in the form
   return (
     <div className="min-h-screen flex flex-col bg-gray-100">
       <div className="container mx-auto flex-grow p-4">
@@ -154,6 +136,8 @@ const ApplyLoan = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
+              pattern="[A-Za-z\s]+"
+              title="Name should only contain alphabets"
               className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
@@ -165,6 +149,8 @@ const ApplyLoan = () => {
               name="contactNumber"
               value={formData.contactNumber}
               onChange={handleChange}
+              pattern="\d+"
+              title="Contact number should only contain numbers"
               className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
@@ -176,6 +162,8 @@ const ApplyLoan = () => {
               name="panCard"
               value={formData.panCard}
               onChange={handleChange}
+              pattern="[A-Za-z0-9]+"
+              title="PAN card number should contain only alphabets and numbers"
               className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
@@ -187,6 +175,8 @@ const ApplyLoan = () => {
               name="aadhar"
               value={formData.aadhar}
               onChange={handleChange}
+              pattern="\d{12}"
+              title="Aadhar number should be a 12-digit number"
               className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
               required
             />
@@ -254,11 +244,11 @@ const ApplyLoan = () => {
               name="documentUrl"
               value={formData.documentUrl}
               onChange={handleChange}
-              placeholder="Enter document URL"
+              placeholder="Salary slip or Bank statement Url"
               className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
             />
             <p className="mt-1 text-sm text-gray-500">
-              Please provide a link to your documents (Google Drive, Dropbox, etc.)
+              Please provide a link to salary slip or upload bank statement (via Google Drive, Dropbox, etc.)
             </p>
           </div>
           <div className="mb-4">

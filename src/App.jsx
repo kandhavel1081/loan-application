@@ -11,13 +11,14 @@ import EMICalculator from './EMICalculator';
 import LoanRepayment from './LoanRepayment';
 import ApplyLoan from './ApplyLoan';
 import BuySellInsurance from './BuySellInsurance';
-import Navbar from './Navbar'; // Import the Navbar component
+import Navbar from './Navbar';
+import Admin from './admin';
+import PrivateRoute from './PrivateRoute';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userDetails, setUserDetails] = useState({});
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,33 +30,62 @@ const App = () => {
     return () => unsubscribe();
   }, []);
 
-  const handleLogin = (email, password, username, age, dob, aadhar, pan, contact) => {
-    setIsLoggedIn(true);
-    setUserDetails({ email, password, username, age, dob, aadhar, pan, contact });
-  };
-
   if (loading) {
-    return <div>Loading...</div>;
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-2xl text-blue-500">Loading...</div>
+      </div>
+    );
   }
 
   return (
-    <>
-      <Router>
-        {isLoggedIn && <Navbar />} {/* Conditionally render the Navbar */}
-        <Routes>
-          <Route path="/" element={isLoggedIn ? <Navigate to="/home" /> : <Login onLogin={handleLogin} />} />
-          <Route path="/home" element={isLoggedIn ? <HomePage /> : <Navigate to="/" />} />
-          <Route path="/profile" element={isLoggedIn ? <Profile userDetails={userDetails} /> : <Navigate to="/" />} />
-          <Route path="/payment" element={isLoggedIn ? <Payment /> : <Navigate to="/" />} />
-          <Route path="/auctioned-vehicles" element={isLoggedIn ? <AuctionedVehicles /> : <Navigate to="/" />} />
-          <Route path="/emi-calculator" element={isLoggedIn ? <EMICalculator /> : <Navigate to="/" />} />
-          <Route path="/loan-repayment" element={isLoggedIn ? <LoanRepayment /> : <Navigate to="/" />} />
-          <Route path="/apply-loan" element={isLoggedIn ? <ApplyLoan /> : <Navigate to="/" />} />
-          <Route path="/buy-sell-insurance" element={isLoggedIn ? <BuySellInsurance /> : <Navigate to="/" />} />
-        </Routes>
-      </Router>
+    <Router>
+      {isLoggedIn && <Navbar />}
+      <Routes>
+        <Route 
+          path="/" 
+          element={isLoggedIn ? <Navigate to="/home" /> : <Login />} 
+        />
+        <Route 
+          path="/home" 
+          element={isLoggedIn ? <HomePage /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/profile" 
+          element={isLoggedIn ? <Profile /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/payment" 
+          element={isLoggedIn ? <Payment /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/auctioned-vehicles" 
+          element={isLoggedIn ? <AuctionedVehicles /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/emi-calculator" 
+          element={isLoggedIn ? <EMICalculator /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/loan-repayment" 
+          element={isLoggedIn ? <LoanRepayment /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/apply-loan" 
+          element={isLoggedIn ? <ApplyLoan /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/buy-sell-insurance" 
+          element={isLoggedIn ? <BuySellInsurance /> : <Navigate to="/" />} 
+        />
+        <Route 
+          path="/admin" 
+          element={isLoggedIn ? <Admin /> : <Navigate to="/" />} 
+        />
+        <Route path="*" element={<Navigate to="/" />} />
+      </Routes>
       <ToastContainer position="top-right" autoClose={3000} />
-    </>
+    </Router>
   );
 };
 

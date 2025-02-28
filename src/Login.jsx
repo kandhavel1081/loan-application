@@ -20,8 +20,95 @@ const Login = ({ onLogin }) => {
 
   const navigate = useNavigate();
 
+  // Add validation functions
+  const validateName = (value) => {
+    return /^[A-Za-z\s]+$/.test(value);
+  };
+
+  const validateEmail = (value) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
+  };
+
+  const validateAadhar = (value) => {
+    return /^\d{12}$/.test(value);
+  };
+
+  const validatePan = (value) => {
+    return /^[A-Z0-9]{10}$/.test(value);
+  };
+
+  const validateContact = (value) => {
+    return /^\d{10}$/.test(value);
+  };
+
+  const validatePassword = (value) => {
+    return value.length >= 8;
+  };
+
+  // Update the input handlers with validation
+  const handleInputChange = (e, setter) => {
+    const { id, value } = e.target;
+    
+    switch (id) {
+      case 'username':
+        if (value === '' || validateName(value)) {
+          setter(value);
+        }
+        break;
+      case 'email':
+        setter(value);
+        break;
+      case 'aadhar':
+        if (value === '' || /^\d{0,12}$/.test(value)) {
+          setter(value);
+        }
+        break;
+      case 'pan':
+        if (value === '' || /^[A-Z0-9]*$/.test(value.toUpperCase())) {
+          setter(value.toUpperCase());
+        }
+        break;
+      case 'contact':
+        if (value === '' || /^\d{0,10}$/.test(value)) {
+          setter(value);
+        }
+        break;
+      default:
+        setter(value);
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (isRegistering) {
+      // Validate all fields before submission
+      if (!validateName(username)) {
+        toast.error('Name should only contain alphabets');
+        return;
+      }
+      if (!validateEmail(email)) {
+        toast.error('Please enter a valid email address');
+        return;
+      }
+      if (!validateAadhar(aadhar)) {
+        toast.error('Aadhar number should be 12 digits');
+        return;
+      }
+      if (!validatePan(pan)) {
+        toast.error('PAN should be 10 characters alphanumeric');
+        return;
+      }
+      if (!validateContact(contact)) {
+        toast.error('Contact number should be 10 digits');
+        return;
+      }
+      if (!validatePassword(password)) {
+        toast.error('Password should be at least 8 characters long');
+        return;
+      }
+    }
+
     try {
       if (isRegistering) {
         // Create new user with Firebase Authentication
@@ -79,14 +166,16 @@ const Login = ({ onLogin }) => {
             <>
               <div>
                 <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                  Name
+                  Name (alphabets only)
                 </label>
                 <input
                   type="text"
                   id="username"
                   value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  onChange={(e) => handleInputChange(e, setUsername)}
                   required
+                  pattern="[A-Za-z\s]+"
+                  title="Name should only contain alphabets"
                   className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-pink-300"
                 />
               </div>
@@ -111,60 +200,73 @@ const Login = ({ onLogin }) => {
                   type="email"
                   id="email"
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => handleInputChange(e, setEmail)}
                   required
+                  pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$"
+                  title="Please enter a valid email address"
                   className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-pink-300"
                 />
               </div>
               <div>
                 <label htmlFor="aadhar" className="block text-sm font-medium text-gray-700">
-                  Aadhar Number
+                  Aadhar Number (12 digits)
                 </label>
                 <input
                   type="text"
                   id="aadhar"
                   value={aadhar}
-                  onChange={(e) => setAadhar(e.target.value)}
+                  onChange={(e) => handleInputChange(e, setAadhar)}
                   required
+                  pattern="\d{12}"
+                  maxLength={12}
+                  title="Aadhar number should be 12 digits"
                   className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-pink-300"
                 />
               </div>
               <div>
                 <label htmlFor="pan" className="block text-sm font-medium text-gray-700">
-                  Pan Number
+                  Pan Number (10 characters)
                 </label>
                 <input
                   type="text"
                   id="pan"
                   value={pan}
-                  onChange={(e) => setPan(e.target.value)}
+                  onChange={(e) => handleInputChange(e, setPan)}
                   required
+                  pattern="[A-Z0-9]{10}"
+                  maxLength={10}
+                  title="PAN should be 10 characters alphanumeric"
                   className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-pink-300"
                 />
               </div>
               <div>
                 <label htmlFor="contact" className="block text-sm font-medium text-gray-700">
-                  Contact Number
+                  Contact Number (10 digits)
                 </label>
                 <input
                   type="text"
                   id="contact"
                   value={contact}
-                  onChange={(e) => setContact(e.target.value)}
+                  onChange={(e) => handleInputChange(e, setContact)}
                   required
+                  pattern="\d{10}"
+                  maxLength={10}
+                  title="Contact number should be 10 digits"
                   className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-pink-300"
                 />
               </div>
               <div>
                 <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  Password
+                  Password (minimum 8 characters)
                 </label>
                 <input
                   type="password"
                   id="password"
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => handleInputChange(e, setPassword)}
                   required
+                  minLength={8}
+                  title="Password must be at least 8 characters long"
                   className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-pink-300"
                 />
               </div>
