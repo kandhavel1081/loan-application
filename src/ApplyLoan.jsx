@@ -111,9 +111,10 @@ const ApplyLoan = () => {
         employmentType: '',
         monthlyIncome: '',
         monthlyTurnover: '',
+        documentUrl: '',
         loanType: '',
         loanAmount: '',
-        documentUrl: '',
+       
       });
 
     } catch (error) {
@@ -237,20 +238,29 @@ const ApplyLoan = () => {
               <option value="education">Education Loan</option>
             </select>
           </div>
-          <div className="mb-4">
-            <label className="block text-lg font-medium text-gray-700">Document URL</label>
-            <input
-              type="url"
-              name="documentUrl"
-              value={formData.documentUrl}
-              onChange={handleChange}
-              placeholder="Salary slip or Bank statement Url"
-              className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
-            />
-            <p className="mt-1 text-sm text-gray-500">
-              Please provide a link to salary slip or upload bank statement (via Google Drive, Dropbox, etc.)
-            </p>
-          </div>
+          {formData.employmentType && (
+            <div className="mb-4">
+              <label className="block text-lg font-medium text-gray-700">
+                {formData.employmentType === 'salaried' ? 'Salary Slip URL' : 'Bank Statement URL'}
+              </label>
+              <input
+                type="url"
+                name="documentUrl"
+                value={formData.documentUrl}
+                onChange={handleChange}
+                placeholder={formData.employmentType === 'salaried' 
+                  ? "Enter salary slip document URL" 
+                  : "Enter bank statement URL"}
+                className="w-full px-3 py-2 mt-1 border rounded-md focus:outline-none focus:ring focus:ring-blue-200"
+                required
+              />
+              <p className="mt-1 text-sm text-gray-500">
+                {formData.employmentType === 'salaried'
+                  ? "Please provide a link to your latest salary slip (via Google Drive, Dropbox, etc.)"
+                  : "Please provide a link to your last 6 months bank statement (via Google Drive, Dropbox, etc.)"}
+              </p>
+            </div>
+          )}
           <div className="mb-4">
             <label className="block text-lg font-medium text-gray-700">Enter Loan Amount</label>
             <input

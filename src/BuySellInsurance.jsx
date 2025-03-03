@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import vehicle1 from './assets/vehicle1.jpg';
-import vehicle2 from './assets/vehicle2.jpg';
-import vehicle3 from './assets/vehicle3.jpg';
 import { auth, db } from './firebase';
 import { collection, addDoc, getDocs } from 'firebase/firestore';
 import { toast } from 'react-toastify';
+import lifeInsurance from './assets/life.png';
+import premiumInsurance from './assets/premium.png';
+import termInsurance from './assets/term.jpg';
 
 const BuySellInsurance = () => {
   const navigate = useNavigate();
@@ -317,32 +317,30 @@ const BuySellInsurance = () => {
           <div className="mt-12">
             <h3 className="text-2xl font-bold mb-4 text-center text-blue-500">Buy Insurance</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Example insurance cards */}
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <img src="https://via.placeholder.com/300" alt="Insurance 1" className="w-full h-48 object-cover rounded-lg mb-4" />
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Insurance 1</h3>
-                <p className="text-gray-700 mb-4">Description of Insurance 1</p>
+                <img src={lifeInsurance} alt="Life Insurance" className="w-full h-48 object-cover rounded-lg mb-4" />
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Life Insurance</h3>
+                <p className="text-gray-700 mb-4">Protect your family's financial future with our comprehensive life insurance plans.</p>
                 <button className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-200">
                   Buy Now
                 </button>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <img src="https://via.placeholder.com/300" alt="Insurance 2" className="w-full h-48 object-cover rounded-lg mb-4" />
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Insurance 2</h3>
-                <p className="text-gray-700 mb-4">Description of Insurance 2</p>
+                <img src={premiumInsurance} alt="Premium Insurance" className="w-full h-48 object-cover rounded-lg mb-4" />
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Premium Insurance</h3>
+                <p className="text-gray-700 mb-4">Our premium insurance plans offer enhanced coverage and exclusive benefits for your complete peace of mind.</p>
                 <button className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-200">
                   Buy Now
                 </button>
               </div>
               <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition-shadow">
-                <img src="https://via.placeholder.com/300" alt="Insurance 3" className="w-full h-48 object-cover rounded-lg mb-4" />
-                <h3 className="text-xl font-bold text-gray-800 mb-2">Insurance 3</h3>
-                <p className="text-gray-700 mb-4">Description of Insurance 3</p>
+                <img src={termInsurance} alt="Term Insurance" className="w-full h-48 object-cover rounded-lg mb-4" />
+                <h3 className="text-xl font-bold text-gray-800 mb-2">Term Insurance</h3>
+                <p className="text-gray-700 mb-4">Get affordable coverage for a specific period with our flexible term insurance options.</p>
                 <button className="w-full px-4 py-2 font-bold text-white bg-blue-500 rounded hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-200">
                   Buy Now
                 </button>
               </div>
-              {/* Add more insurance cards as needed */}
             </div>
           </div>
         )}
