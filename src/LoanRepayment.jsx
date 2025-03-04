@@ -11,7 +11,7 @@ const LoanRepayment = () => {
       return;
     }
     
-    const upiId = '25645962@ibl'; // Updated with the UPI ID you provided
+    const upiId = '9025645962@ibl'; // Updated with the UPI ID you provided
     const url = `upi://pay?pa=${upiId}&pn=Kandhavel%20Finance&am=${amount}&cu=INR&tn=Loan%20Repayment`;
 
     window.location.href = url;
